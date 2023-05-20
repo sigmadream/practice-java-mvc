@@ -3,6 +3,7 @@ package com.sangkon.mvc;
 import com.sangkon.mvc.controller.Controller;
 import com.sangkon.mvc.controller.RequestMethod;
 import com.sangkon.mvc.view.JspViewResolver;
+import com.sangkon.mvc.view.ModelAndView;
 import com.sangkon.mvc.view.View;
 import com.sangkon.mvc.view.ViewResolver;
 import org.slf4j.Logger;
@@ -26,10 +27,13 @@ public class DispatcherServlet extends HttpServlet {
     private RequestMappingHandlerMapping rmhm;
     private List<JspViewResolver> viewResolvers;
 
+    private List<HandlerAdapter> handlerAdapters;
+
     @Override
     public void init() throws ServletException {
         rmhm = new RequestMappingHandlerMapping();
         rmhm.init();
+        handlerAdapters = List.of(new SimpleControllerHandlerAdapter());
         viewResolvers = Collections.singletonList(new JspViewResolver());
     }
 
@@ -38,11 +42,17 @@ public class DispatcherServlet extends HttpServlet {
         logger.info("[DispatcherServlet] service started.");
         try {
             Controller handler = rmhm.findHandler(new HandlerKey(request.getRequestURI(), RequestMethod.valueOf(request.getMethod())));
-            String viewName = handler.handleRequest(request, response);
+
+            HandlerAdapter handlerAdapter = handlerAdapters.stream()
+                    .filter(ha -> ha.supports(handler))
+                    .findFirst()
+                    .orElseThrow(() -> new ServletException("No adapter for handler [" + handler + "]"));
+
+            ModelAndView modelAndView = handlerAdapter.handle(request, response, handler);
 
             for (ViewResolver viewResolver : viewResolvers) {
-                View view = viewResolver.resolveViewName(viewName);
-                view.render(new HashMap<>(), request, response);
+                View view = viewResolver.resolveViewName(modelAndView.getViewName());
+                view.render(modelAndView.getModel(), request, response);
             }
 
         } catch (Exception e) {
