@@ -1,5 +1,7 @@
 package com.sangkon.mvc.annotation;
 
+import com.sangkon.mvc.controller.RequestMethod;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
