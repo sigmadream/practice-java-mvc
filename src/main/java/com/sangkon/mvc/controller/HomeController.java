@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class HomeController implements Controller {
     public String handleRequest(HttpServletRequest request, HttpServletResponse response) {
-        return "home.jsp";
+        return "home";
     }
 }

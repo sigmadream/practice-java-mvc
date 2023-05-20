@@ -8,6 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 public class UserListController implements Controller {
     public String handleRequest(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("users", UserRepository.findAll());
-        return "/user/list.jsp";
+        return "/user/list";
     }
 }
