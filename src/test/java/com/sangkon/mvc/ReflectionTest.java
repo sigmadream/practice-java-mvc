@@ -1,6 +1,7 @@
 package com.sangkon.mvc;
 
 import com.sangkon.mvc.annotation.Controller;
+import com.sangkon.mvc.annotation.Service;
 import com.sangkon.mvc.model.User;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
